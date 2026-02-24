@@ -457,14 +457,14 @@
         // --- PRODUCTION SETUP ---
         let RPC_URL = localStorage.getItem('ZAR_RPC_URL') || (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
             ? 'http://127.0.0.1:8545'
-            : 'http://zar-chain.duckdns.org:8545');
+            : 'https://zar-chain.duckdns.org:8545');
 
-        // FORCE HTTP for DuckDNS (MetaMask/Browsers often upgrade to HTTPS)
-        if (RPC_URL.includes("duckdns.org") && RPC_URL.startsWith("https://")) {
-            RPC_URL = RPC_URL.replace("https://", "http://");
-            if (!RPC_URL.includes(":8545")) RPC_URL += ":8545";
+        // FORCE HTTPS for DuckDNS (Now that node supports it)
+        if (RPC_URL.includes("duckdns.org") && RPC_URL.startsWith("http://")) {
+            RPC_URL = RPC_URL.replace("http://", "https://");
             localStorage.setItem('ZAR_RPC_URL', RPC_URL);
         }
+
 
         function setManualRPC() {
             let val = document.getElementById('manualRPC').value.trim();

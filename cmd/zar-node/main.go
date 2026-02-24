@@ -33,14 +33,22 @@ func main() {
 
 	// Start RPC Server for MetaMask
 	rpcServer := rpc.NewRPCServer(chain, 8545)
-	rpcServer.Start()
 
-	// Update DuckDNS (Token and Domain needs to be set via environment variables)
-	if os.Getenv("DUCKDNS_TOKEN") != "" && os.Getenv("DUCKDNS_DOMAIN") != "" {
-		utils.UpdateDuckDNS(os.Getenv("DUCKDNS_DOMAIN"), os.Getenv("DUCKDNS_TOKEN"))
+	domain := os.Getenv("DUCKDNS_DOMAIN")
+	token := os.Getenv("DUCKDNS_TOKEN")
+
+	if domain != "" && token != "" {
+		fmt.Println("[SSL] DuckDNS credentials found. Activating Automated SSL (HTTPS)...")
+		fqdn := domain + ".duckdns.org"
+		rpcServer.StartTLS(fqdn, token)
+		
+		// Also start the IP update heartbeat
+		go utils.UpdateDuckDNS(domain, token)
 	} else {
-		fmt.Println("[WARN] DuckDNS Domain or Token not set. Remote access might be unstable.")
+		fmt.Println("[RPC] Starting standard HTTP server (No SSL credentials found).")
+		rpcServer.Start()
 	}
+
 
 
 
