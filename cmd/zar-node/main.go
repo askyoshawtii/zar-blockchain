@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 	"zar-blockchain/pkg/blockchain"
 	"zar-blockchain/pkg/gateway"
 	"zar-blockchain/pkg/rpc"
@@ -9,6 +10,8 @@ import (
 
 	"zar-blockchain/pkg/wallet"
 )
+
+
 
 
 
@@ -47,25 +50,19 @@ func main() {
 	treasuryAddr := "0xTreasuryFundAddress1234567890abcdef"
 	stakerAddr := "0xStakerAddress1234567890abcdef"
 
-	// Simple simulation: Mine 2 blocks
-	fmt.Println("Mining Block 1...")
-	chain.MinePendingTransactions(myMetaMaskAddr, stakerAddr, treasuryAddr)
-	fmt.Printf("Block 1 Added. Hash: %s\n", chain.GetLatestBlock().Hash)
-
-	fmt.Println("Mining Block 2...")
-	chain.MinePendingTransactions(myMetaMaskAddr, stakerAddr, treasuryAddr)
-	fmt.Printf("Block 2 Added. Hash: %s\n", chain.GetLatestBlock().Hash)
-
-
-
-	fmt.Printf("\nBlockchain Length: %d\n", len(chain.Blocks))
-	for _, block := range chain.Blocks {
-		receiver := "None"
-		if len(block.Transactions) > 0 {
-			receiver = block.Transactions[0].Receiver
+	// START REAL CONTINUOUS MINING
+	fmt.Println("\n[MINER] Starting Background Mining Loop...")
+	go func() {
+		for {
+			fmt.Println("[MINER] Mining next block...")
+			chain.MinePendingTransactions(myMetaMaskAddr, stakerAddr, treasuryAddr)
+			fmt.Printf("[MINER] Block Mined! Height: %d | Hash: %s\n", len(chain.Blocks), chain.GetLatestBlock().Hash)
+			
+			// Wait 10 seconds between blocks (adjust for difficulty)
+			time.Sleep(10 * time.Second)
 		}
-		fmt.Printf("Block %d: %s | Reward for: %s\n", block.Index, block.Hash, receiver)
-	}
+	}()
+
 
 	// Demonstration: Universal Gateway
 	gw := gateway.NewGateway(chain, 0.01) // 1% Gateway Fee
