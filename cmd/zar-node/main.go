@@ -13,9 +13,11 @@ import (
 func main() {
 	fmt.Println("Starting ZAR Blockchain Node...")
 
-	// Initialize Chain
-	chain := blockchain.NewChain(2)
-	fmt.Printf("Genesis Block Mined: %s\n", chain.Blocks[0].Hash)
+	// Initialize Chain (Load from disk if exists)
+	chain := blockchain.LoadChain(2)
+	fmt.Printf("Current Blockchain Height: %d\n", len(chain.Blocks))
+	fmt.Printf("Latest Block Hash: %s\n", chain.GetLatestBlock().Hash)
+
 
 
 	// Start RPC Server for MetaMask

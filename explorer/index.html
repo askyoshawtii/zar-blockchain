@@ -440,7 +440,7 @@
     <script>
         // --- REAL NODE CONNECTIVITY ---
         // Change this to your DuckDNS URL when ready!
-        const RPC_URL = 'http://localhost:8545';
+        const RPC_URL = 'http://127.0.0.1:8545';
 
         async function fetchBlocks() {
             try {
@@ -455,14 +455,14 @@
                     })
                 });
                 const data = await response.json();
+                console.log("RPC Response:", data);
                 const latestBlock = parseInt(data.result, 16);
                 document.getElementById('totalBlocks').innerText = latestBlock + 1;
-
-                // Mocking block list for now as we don't have eth_getBlockByNumber fully in the mock node yet
-                // But we show it's "Live" by the active block number
+                document.getElementById('blockBody').innerHTML = ''; // Clear status
                 renderMockBlocks(latestBlock);
             } catch (error) {
-                console.log("RPC Error:", error);
+                console.error("RPC Connection Error:", error);
+                document.getElementById('totalBlocks').innerText = "Error";
             }
         }
 

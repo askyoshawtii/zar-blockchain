@@ -1,18 +1,22 @@
 package blockchain
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"sync"
 )
 
+
 type Chain struct {
-	Blocks     []*Block
-	Difficulty int
-	Mempool    []Transaction
-	Balances   map[string]float64
+	Blocks     []*Block           `json:"blocks"`
+	Difficulty int                `json:"difficulty"`
+	Mempool    []Transaction      `json:"mempool"`
+	Balances   map[string]float64 `json:"balances"`
 	mu         sync.Mutex
 }
+
 
 func NewChain(difficulty int) *Chain {
 	genesisBlock := NewBlock(0, "0", []Transaction{}, difficulty)
@@ -74,5 +78,33 @@ func (c *Chain) MinePendingTransactions(minerAddress string, stakerAddress strin
 	newBlock := NewBlock(int64(len(c.Blocks)), c.GetLatestBlock().Hash, txs, c.Difficulty)
 	newBlock.Mine()
 	c.AddBlock(newBlock)
+	c.SaveToFile()
+}
+
+func (c *Chain) SaveToFile() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	data, err := json.MarshalIndent(c, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile("chaindata.json", data, 0644)
+}
+
+func LoadChain(difficulty int) *Chain {
+	data, err := os.ReadFile("chaindata.json")
+	if err != nil {
+		// If file doesn't exist, return a new chain
+		return NewChain(difficulty)
+	}
+
+	var chain Chain
+	if err := json.Unmarshal(data, &chain); err != nil {
+		return NewChain(difficulty)
+	}
+
+	return &chain
 }
 

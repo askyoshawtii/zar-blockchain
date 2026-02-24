@@ -73,8 +73,21 @@ func (s *RPCServer) handleRPC(w http.ResponseWriter, r *http.Request) {
 		weiBalance := int64(balance * 1e18)
 		result = fmt.Sprintf("0x%x", weiBalance)
 	case "net_version":
-
 		result = "1957"
+	case "zar_requestFaucet":
+		addr := req.Params[0].(string)
+		faucetAmount := 10.0
+		fmt.Printf("[FAUCET] Sending %f ZAR to %s\n", faucetAmount, addr)
+		
+		tx := blockchain.Transaction{
+			ID:       fmt.Sprintf("faucet-%d", time.Now().Unix()),
+			Sender:   "FAUCET",
+			Receiver: addr,
+			Amount:   faucetAmount,
+		}
+		s.Chain.Mempool = append(s.Chain.Mempool, tx)
+		s.Chain.MinePendingTransactions("FAUCET_MINER", "0xSTAKER", "0xTREASURY")
+		result = "10 ZAR sent to your address!"
 	default:
 		rpcErr = map[string]interface{}{
 			"code":    -32601,
