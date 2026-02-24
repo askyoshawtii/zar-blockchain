@@ -1,13 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"os"
 	"zar-blockchain/pkg/blockchain"
 	"zar-blockchain/pkg/gateway"
 	"zar-blockchain/pkg/rpc"
+	"zar-blockchain/pkg/utils"
 
 	"zar-blockchain/pkg/wallet"
 )
+
 
 
 func main() {
@@ -24,8 +26,13 @@ func main() {
 	rpcServer := rpc.NewRPCServer(chain, 8545)
 	rpcServer.Start()
 
-	// Update DuckDNS (Token needs to be set via environment variable)
-	// utils.UpdateDuckDNS("zar-chain", os.Getenv("DUCKDNS_TOKEN"))
+	// Update DuckDNS (Token and Domain needs to be set via environment variables)
+	if os.Getenv("DUCKDNS_TOKEN") != "" && os.Getenv("DUCKDNS_DOMAIN") != "" {
+		utils.UpdateDuckDNS(os.Getenv("DUCKDNS_DOMAIN"), os.Getenv("DUCKDNS_TOKEN"))
+	} else {
+		fmt.Println("[WARN] DuckDNS Domain or Token not set. Remote access might be unstable.")
+	}
+
 
 
 	// Create a wallet

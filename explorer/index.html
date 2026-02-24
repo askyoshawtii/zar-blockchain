@@ -453,7 +453,7 @@
         // --- PRODUCTION SETUP ---
         let RPC_URL = localStorage.getItem('ZAR_RPC_URL') || (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
             ? 'http://127.0.0.1:8545'
-            : 'https://zar-chain.duckdns.org');
+            : 'https://zar-chain.duckdns.org/rpc');
 
         function setManualRPC() {
             const val = document.getElementById('manualRPC').value;
