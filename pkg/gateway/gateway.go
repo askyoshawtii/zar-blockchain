@@ -2,40 +2,63 @@ package gateway
 
 import (
 	"fmt"
+	"time"
 	"zar-blockchain/pkg/blockchain"
 )
 
+
 type Gateway struct {
-	Chain *blockchain.Chain
-	Fee   float64 // Fee percentage (e.g., 0.01 for 1%)
+	Chain            *blockchain.Chain
+	Fee              float64
+	Oracle           *PriceOracle
+	ExternalReceivers map[string]string // Maps External Address -> User's ZAR Address
 }
 
 func NewGateway(chain *blockchain.Chain, fee float64) *Gateway {
-	return &Gateway{Chain: chain, Fee: fee}
+	return &Gateway{
+		Chain:             chain,
+		Fee:               fee,
+		Oracle:            NewPriceOracle(),
+		ExternalReceivers: make(map[string]string),
+	}
 }
 
-// DepositNotification simulates a deposit being detected on an external chain.
-// externalChain: "BTC", "SOL", "TRX", etc.
-// externalAmount: Amount deposited in the external currency.
-// targetZARAddress: The user's MetaMask address to receive ZAR.
-func (g *Gateway) ProcessExternalDeposit(externalChain string, externalAmount float64, exchangeRate float64, targetZARAddress string) {
-	fmt.Printf("[GATEWAY] Deposit detected on %s: %f units\n", externalChain, externalAmount)
-	
-	// Calculation: (Amount * Rate) - Fee
-	rawTotal := externalAmount * exchangeRate
-	feeAmount := rawTotal * g.Fee
-	netAmount := rawTotal - feeAmount
+// GenerateReceiver generates a "deposit address" for a specific chain (BTC, SOL, etc.)
+// and links it to the user's ZAR (MetaMask) address.
+func (g *Gateway) GenerateReceiver(externalChain string, zarAddress string) string {
+	// In a real system, this would derive a real BTC/SOL address from a HD Wallet.
+	// For now, we simulate a unique receiver address.
+	receiverAddr := fmt.Sprintf("%s-RECV-%s", externalChain, zarAddress[2:8])
+	g.ExternalReceivers[receiverAddr] = zarAddress
+	fmt.Printf("[GATEWAY] Generated %s Receiver: %s for user %s\n", externalChain, receiverAddr, zarAddress)
+	return receiverAddr
+}
 
-	fmt.Printf("[GATEWAY] Converting to %f ZAR (Fee: %f)\n", netAmount, feeAmount)
-
-	// In a real implementation, this would trigger a new block or transaction
-	tx := blockchain.Transaction{
-		ID:       fmt.Sprintf("gw-%s-%f", externalChain, externalAmount),
-		Sender:   "GATEWAY_RESERVE",
-		Receiver: targetZARAddress,
-		Amount:   netAmount,
+func (g *Gateway) ProcessExternalDeposit(externalChain string, receiverAddr string, amount float64) {
+	zarAddress, ok := g.ExternalReceivers[receiverAddr]
+	if !ok {
+		fmt.Printf("[GATEWAY] Error: Unknown receiver address %s\n", receiverAddr)
+		return
 	}
 
+	// Fetch live price
+	coinIDMap := map[string]string{"BTC": "bitcoin", "SOL": "solana", "TRX": "tron"}
+	usdPrice, err := g.Oracle.GetPrice(coinIDMap[externalChain], "usd")
+	if err != nil {
+		fmt.Printf("[GATEWAY] Price Error: %v. Using fallback price.\n", err)
+		usdPrice = 50000.0 // Fallback
+	}
+
+	netAmount := (amount * usdPrice) * (1 - g.Fee)
+	
+	fmt.Printf("[GATEWAY] Detected %f %s deposit. Minting %f ZAR to %s\n", amount, externalChain, netAmount, zarAddress)
+
+	tx := blockchain.Transaction{
+		ID:       fmt.Sprintf("swap-%s-%d", externalChain, time.Now().Unix()),
+		Sender:   "GATEWAY",
+		Receiver: zarAddress,
+		Amount:   netAmount,
+	}
 	g.Chain.Mempool = append(g.Chain.Mempool, tx)
-	fmt.Printf("[GATEWAY] Minting %f ZAR to %s\n", netAmount, targetZARAddress)
 }
+

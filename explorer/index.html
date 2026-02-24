@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZAR Blockchain | The Future of Hybrid Interoperability</title>
-    <meta name="description" content="ZAR Blockchain: A hybrid PoW/PoS network with a universal gateway for seamless cross-chain interoperability.">
+    <meta name="description"
+        content="ZAR Blockchain: A hybrid PoW/PoS network with a universal gateway for seamless cross-chain interoperability.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary: #FFD700; /* Gold */
+            --primary: #FFD700;
+            /* Gold */
             --primary-glow: rgba(255, 215, 0, 0.4);
             --bg: #0A0A0B;
             --card-bg: rgba(20, 20, 22, 0.7);
             --text-main: #FFFFFF;
             --text-dim: #A0A0A5;
-            --accent: #FF8C00; /* Dark Orange */
+            --accent: #FF8C00;
+            /* Dark Orange */
             --glass-border: rgba(255, 255, 255, 0.1);
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -43,7 +49,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: 
+            background:
                 radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(255, 140, 0, 0.05) 0%, transparent 40%);
         }
@@ -271,12 +277,21 @@
             opacity: 0.8;
         }
 
-        .status-up { color: #00FF94; }
+        .status-up {
+            color: #00FF94;
+        }
 
         /* --- Animations --- */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate {
@@ -285,12 +300,21 @@
 
         /* --- Responsive --- */
         @media (max-width: 768px) {
-            h1 { font-size: 3rem; }
-            section { padding: 4rem 0; }
-            .nav-links { display: none; }
+            h1 {
+                font-size: 3rem;
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="bg-glow"></div>
 
@@ -306,7 +330,8 @@
                 <a href="#gateway">Gateway</a>
                 <a href="#github">GitHub</a>
             </div>
-            <a href="javascript:addToMetaMask()" class="btn" style="padding: 0.6rem 1.5rem; font-size: 0.85rem; box-shadow: none;">
+            <a href="javascript:addToMetaMask()" class="btn"
+                style="padding: 0.6rem 1.5rem; font-size: 0.85rem; box-shadow: none;">
                 Add Network
             </a>
         </div>
@@ -317,10 +342,12 @@
         <section class="hero animate">
             <div class="badge">Hybrid PoW / PoS Protocol</div>
             <h1>ZAR Blockchain:<br>The Sovereign Gateway</h1>
-            <p>A fair-launch, EVM-compatible network with a built-in universal gateway for automatic cross-chain swaps.</p>
+            <p>A fair-launch, EVM-compatible network with a built-in universal gateway for automatic cross-chain swaps.
+            </p>
             <div style="display: flex; gap: 1rem; justify-content: center;">
                 <a href="#explorer" class="btn">View Explorer</a>
-                <a href="https://github.com/askyo/zar-blockchain" target="_blank" class="btn btn-outline">GitHub Repository</a>
+                <a href="https://github.com/askyo/zar-blockchain" target="_blank" class="btn btn-outline">GitHub
+                    Repository</a>
             </div>
         </section>
 
@@ -363,31 +390,48 @@
                     <tbody id="blockBody">
                         <!-- Blocks will be injected here -->
                         <tr>
-                            <td colspan="4" style="text-align: center; color: var(--text-dim);">Connecting to ZAR Node via DuckDNS...</td>
+                            <td colspan="4" style="text-align: center; color: var(--text-dim);">Connecting to ZAR Node
+                                via DuckDNS...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Gateway Section -->
         <section id="gateway" class="animate" style="text-align: center;">
             <div class="badge">Universal Gateway</div>
             <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Seamless Cross-Chain Swaps</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
                 <div class="stat-card" style="text-align: left;">
                     <h3>Bitcoin -> ZAR</h3>
-                    <p style="color: var(--text-dim); margin: 1rem 0;">Send BTC to your generated receiver and get native ZAR instantly.</p>
+                    <p style="color: var(--text-dim); margin: 1rem 0;">Send BTC to your generated receiver and get
+                        native ZAR instantly.</p>
                     <span class="value" id="btcPrice">USD ...</span>
                 </div>
                 <div class="stat-card" style="text-align: left;">
                     <h3>Solana -> ZAR</h3>
-                    <p style="color: var(--text-dim); margin: 1rem 0;">Auto-bridge SOL assets directly into the ZAR ecosystem.</p>
+                    <p style="color: var(--text-dim); margin: 1rem 0;">Auto-bridge SOL assets directly into the ZAR
+                        ecosystem.</p>
                     <span class="value" id="solPrice">USD ...</span>
                 </div>
             </div>
+
+            <!-- Faucet Section -->
+            <div class="card-large" style="margin-top: 4rem; padding: 2rem; border-color: #00FF94;">
+                <h3 style="margin-bottom: 1rem; color: #00FF94;">ZAR Testnet Faucet</h3>
+                <p style="color: var(--text-dim); margin-bottom: 1.5rem;">Need ZAR to test out the network? Request 10
+                    free ZAR below.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <input type="text" id="faucetAddr" placeholder="Enter your 0x address"
+                        style="flex: 1; max-width: 400px; padding: 0.8rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white;">
+                    <button onclick="requestFaucet()" class="btn"
+                        style="background: #00FF94; box-shadow: 0 5px 20px rgba(0, 255, 148, 0.2);">Request ZAR</button>
+                </div>
+                <p id="faucetStatus" style="margin-top: 1rem; font-size: 0.9rem;"></p>
+            </div>
         </section>
     </main>
+
 
     <footer style="padding: 4rem 0; text-align: center; border-top: 1px solid var(--glass-border); margin-top: 8rem;">
         <p style="color: var(--text-dim);">© 2026 ZAR Blockchain Project. A Fair Launch Initiative.</p>
@@ -396,7 +440,7 @@
     <script>
         // --- REAL NODE CONNECTIVITY ---
         // Change this to your DuckDNS URL when ready!
-        const RPC_URL = 'http://localhost:8545'; 
+        const RPC_URL = 'http://localhost:8545';
 
         async function fetchBlocks() {
             try {
@@ -443,7 +487,7 @@
                 const data = await resp.json();
                 document.getElementById('btcPrice').innerText = `$${data.bitcoin.usd.toLocaleString()}`;
                 document.getElementById('solPrice').innerText = `$${data.solana.usd.toLocaleString()}`;
-            } catch (err) {}
+            } catch (err) { }
         }
 
         async function addToMetaMask() {
@@ -469,10 +513,39 @@
             }
         }
 
+        async function requestFaucet() {
+            const addr = document.getElementById('faucetAddr').value;
+            if (!addr.startsWith('0x')) {
+                alert("Please enter a valid 0x address.");
+                return;
+            }
+
+            document.getElementById('faucetStatus').innerText = "Requesting ZAR...";
+            try {
+                const response = await fetch(RPC_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        method: 'zar_requestFaucet',
+                        params: [addr],
+                        id: 1
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('faucetStatus').innerText = data.result || "Success!";
+                fetchBlocks(); // Refresh block count
+            } catch (err) {
+                document.getElementById('faucetStatus').innerText = "Error connecting to node.";
+            }
+        }
+
         // Initialize
+
         fetchBlocks();
         fetchPrices();
         setInterval(fetchBlocks, 10000); // Update every 10s
     </script>
 </body>
+
 </html>

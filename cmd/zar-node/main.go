@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"zar-blockchain/pkg/blockchain"
+	"zar-blockchain/pkg/gateway"
 	"zar-blockchain/pkg/rpc"
+
 	"zar-blockchain/pkg/wallet"
 )
 
@@ -56,7 +58,22 @@ func main() {
 		fmt.Printf("Block %d: %s | Reward for: %s\n", block.Index, block.Hash, receiver)
 	}
 
+	// Demonstration: Universal Gateway
+	gw := gateway.NewGateway(chain, 0.01) // 1% Gateway Fee
+	
+	// Start the Auto-Detector (Scanner)
+	scanner := gateway.NewScanner(gw)
+	scanner.Start()
+
+	fmt.Println("\n--- Universal Gateway Activated ---")
+	// 1. User generates a BTC receiver address
+	btcReceiver := gw.GenerateReceiver("BTC", myMetaMaskAddr)
+	fmt.Printf("Send Bitcoin to: %s to receive ZAR Coin!\n", btcReceiver)
+
 	fmt.Println("\nNode is running. Press Ctrl+C to stop.")
 	select {}
 }
+
+
+
 

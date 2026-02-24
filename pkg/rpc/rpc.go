@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 	"zar-blockchain/pkg/blockchain"
 )
+
 
 type RPCServer struct {
 	Chain *blockchain.Chain
@@ -59,9 +61,10 @@ func (s *RPCServer) handleRPC(w http.ResponseWriter, r *http.Request) {
 
 	switch req.Method {
 	case "eth_chainId":
-		result = "0x7A5" // Chain ID 1957 (ZAR in hex-ish / arbitrary)
+		result = "0x7a5" // 1957 in hex
 	case "eth_blockNumber":
 		result = fmt.Sprintf("0x%x", len(s.Chain.Blocks)-1)
+
 	case "eth_getBalance":
 		addr := req.Params[0].(string)
 		balance := s.Chain.Balances[addr]
