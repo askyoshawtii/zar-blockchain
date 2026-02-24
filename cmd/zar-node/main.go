@@ -23,6 +23,10 @@ func main() {
 	fmt.Printf("Current Blockchain Height: %d\n", len(chain.Blocks))
 	fmt.Printf("Latest Block Hash: %s\n", chain.GetLatestBlock().Hash)
 
+	// Automated Port Forwarding (UPnP)
+	utils.SetupUPnP(8545)
+
+
 
 
 	// Start RPC Server for MetaMask
