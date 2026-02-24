@@ -459,8 +459,8 @@
             ? 'http://127.0.0.1:8545'
             : 'https://zar-chain.duckdns.org:8545');
 
-        // SANITIZE: If RPC_URL is an address (starts with 0x), RESET IT
-        if (RPC_URL.startsWith("0x")) {
+        // SANITIZE: If RPC_URL contains a wallet address, RESET IT
+        if (/0x[a-fA-F0-9]{40}/.test(RPC_URL) || RPC_URL.includes("0x")) {
             console.error("Corrupt RPC URL detected (was a wallet address). Resetting to default.");
             RPC_URL = 'https://zar-chain.duckdns.org:8545';
             localStorage.setItem('ZAR_RPC_URL', RPC_URL);

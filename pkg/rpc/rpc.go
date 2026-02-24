@@ -66,7 +66,15 @@ func (s *RPCServer) handleRPC(w http.ResponseWriter, r *http.Request) {
 		result = fmt.Sprintf("0x%x", len(s.Chain.Blocks)-1)
 
 	case "eth_getBalance":
-		addr := req.Params[0].(string)
+		if len(req.Params) < 1 {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Missing parameters"}
+			break
+		}
+		addr, ok := req.Params[0].(string)
+		if !ok {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Invalid address format"}
+			break
+		}
 		balance := s.Chain.Balances[addr]
 		// Convert ZAR to Wei-ish (18 decimals)
 		// 1 ZAR = 10^18 units
@@ -75,7 +83,15 @@ func (s *RPCServer) handleRPC(w http.ResponseWriter, r *http.Request) {
 	case "net_version":
 		result = "1957"
 	case "zar_requestFaucet":
-		addr := req.Params[0].(string)
+		if len(req.Params) < 1 {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Missing address parameter"}
+			break
+		}
+		addr, ok := req.Params[0].(string)
+		if !ok || len(addr) < 42 {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Invalid address format"}
+			break
+		}
 		faucetAmount := 10.0
 		fmt.Printf("[FAUCET] Sending %f ZAR to %s\n", faucetAmount, addr)
 		
