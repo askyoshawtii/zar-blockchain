@@ -29,11 +29,31 @@ type Gateway struct {
 }
 
 var SupportedChains = map[string]string{
-	"BTC": "bitcoin",
-	"ETH": "ethereum",
-	"SOL": "solana",
-	"TRX": "tron",
-	"BNB": "binancecoin",
+	"BTC":   "bitcoin",
+	"ETH":   "ethereum",
+	"SOL":   "solana",
+	"TRX":   "tron",
+	"BNB":   "binancecoin",
+	"LTC":   "litecoin",
+	"DOGE":  "dogecoin",
+	"MATIC": "matic-network",
+	"XMR":   "monero",
+	"XRP":   "ripple",
+	"ADA":   "cardano",
+	"PEPE":  "pepe",
+	"CELO":  "celo",
+	"AVAX":  "avalanche-2",
+	"DOT":   "polkadot",
+	"LINK":  "chainlink",
+	"SHIB":  "shiba-inu",
+	"UNI":   "uniswap",
+	"APT":   "aptos",
+	"SUI":   "sui",
+	"NEAR":  "near",
+	"FTM":   "fantom",
+	"ATOM":  "cosmos",
+	"OP":    "optimism",
+	"ARB":   "arbitrum",
 }
 
 func NewGateway(chain *blockchain.Chain, fee float64) *Gateway {
