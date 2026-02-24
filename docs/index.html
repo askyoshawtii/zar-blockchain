@@ -494,10 +494,22 @@
         }
 
         async function addToMetaMask() {
-            if (!window.ethereum) {
-                alert("MetaMask not found! Please install the MetaMask extension in your browser to use this feature.");
-                return;
+            let provider = window.ethereum;
+
+            // Handle cases where multiple wallets are installed (e.g., Trust + MetaMask)
+            if (window.ethereum && window.ethereum.providers) {
+                provider = window.ethereum.providers.find((p) => p.isMetaMask);
             }
+
+            if (!provider || !provider.isMetaMask) {
+                const isTrust = provider && provider.isTrust;
+                const msg = isTrust
+                    ? "Trust Wallet detected, but this feature works best with MetaMask. Please disable Trust Wallet or switch to MetaMask."
+                    : "MetaMask not found! Please install the MetaMask extension to use this feature.";
+                alert(msg);
+                if (!provider) return;
+            }
+
             const params = [{
                 chainId: '0x7a5',
                 chainName: 'ZAR Blockchain',
@@ -511,12 +523,12 @@
             }];
 
             try {
-                await window.ethereum.request({
+                await provider.request({
                     method: 'wallet_addEthereumChain',
                     params: params
                 });
             } catch (error) {
-                alert("Metamask not detected or error: " + error.message);
+                alert("Wallet error: " + error.message);
             }
         }
 
