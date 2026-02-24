@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAR Blockchain | The Future of Hybrid Interoperability</title>
+    <meta name="description"
+        content="ZAR Blockchain: A hybrid PoW/PoS network with a universal gateway for seamless cross-chain interoperability.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFD700;
+            /* Gold */
+            --primary-glow: rgba(255, 215, 0, 0.4);
+            --bg: #0A0A0B;
+            --card-bg: rgba(20, 20, 22, 0.7);
+            --text-main: #FFFFFF;
+            --text-dim: #A0A0A5;
+            --accent: #FF8C00;
+            /* Dark Orange */
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Background Effects --- */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 140, 0, 0.05) 0%, transparent 40%);
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 8rem 0;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 0;
+            background: rgba(10, 10, 11, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* --- Hero --- */
+        .hero {
+            text-align: center;
+            padding-top: 12rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 100px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #FFF 0%, #AAA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: var(--primary);
+            color: var(--bg);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-dim);
+        }
+
+        /* --- Explorer Dashboard --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: -4rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            background: rgba(20, 20, 22, 0.9);
+        }
+
+        .stat-card .label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* --- Table Section --- */
+        .card-large {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 3rem;
+            margin-top: 4rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px border var(--glass-border);
+        }
+
+        td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95rem;
+        }
+
+        .hash {
+            font-family: monospace;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        .status-up {
+            color: #00FF94;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <div class="container nav-content">
+            <div class="logo">
+                <div class="logo-icon">Z</div>
+                ZAR Chain
+            </div>
+            <div class="nav-links">
+                <a href="#about">Technology</a>
+                <a href="#explorer">Explorer</a>
+                <a href="#gateway">Gateway</a>
+                <a href="#github">GitHub</a>
+            </div>
+            <a href="javascript:addToMetaMask()" class="btn"
+                style="padding: 0.6rem 1.5rem; font-size: 0.85rem; box-shadow: none;">
+                Add Network
+            </a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero animate">
+            <div class="badge">Hybrid PoW / PoS Protocol</div>
+            <h1>ZAR Blockchain:<br>The Sovereign Gateway</h1>
+            <p>A fair-launch, EVM-compatible network with a built-in universal gateway for automatic cross-chain swaps.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="#explorer" class="btn">View Explorer</a>
+                <a href="https://github.com/askyo/zar-blockchain" target="_blank" class="btn btn-outline">GitHub
+                    Repository</a>
+            </div>
+        </section>
+
+        <!-- Stats Grid -->
+        <div class="dashboard-grid animate" style="animation-delay: 0.2s;">
+            <div class="stat-card">
+                <span class="label">Network Status</span>
+                <span class="value status-up">Active</span>
+            </div>
+            <div class="stat-card">
+                <span class="label">Total Blocks</span>
+                <span class="value" id="totalBlocks">...</span>
+            </div>
+            <div class="stat-card">
+                <span class="label">ZAR Value</span>
+                <span class="value">$0.00</span>
+            </div>
+            <div class="stat-card">
+                <span class="label">Connected Nodes</span>
+                <span class="value">1 (Sovereign)</span>
+            </div>
+        </div>
+
+        <!-- Explorer Section -->
+        <section id="explorer" class="animate" style="animation-delay: 0.4s;">
+            <div class="card-large">
+                <div class="card-header">
+                    <h2>Latest Blocks</h2>
+                    <span class="badge" style="margin:0; font-size: 0.7rem;">Real-time Feed</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Block</th>
+                            <th>Timestamp</th>
+                            <th>Hash</th>
+                            <th>Miner</th>
+                        </tr>
+                    </thead>
+                    <tbody id="blockBody">
+                        <!-- Blocks will be injected here -->
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-dim);">Connecting to ZAR Node
+                                via DuckDNS...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="gateway" class="animate" style="text-align: center;">
+            <div class="badge">Universal Gateway</div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Seamless Cross-Chain Swaps</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div class="stat-card" style="text-align: left;">
+                    <h3>Bitcoin -> ZAR</h3>
+                    <p style="color: var(--text-dim); margin: 1rem 0;">Send BTC to your generated receiver and get
+                        native ZAR instantly.</p>
+                    <span class="value" id="btcPrice">USD ...</span>
+                </div>
+                <div class="stat-card" style="text-align: left;">
+                    <h3>Solana -> ZAR</h3>
+                    <p style="color: var(--text-dim); margin: 1rem 0;">Auto-bridge SOL assets directly into the ZAR
+                        ecosystem.</p>
+                    <span class="value" id="solPrice">USD ...</span>
+                </div>
+            </div>
+
+            <!-- Faucet Section -->
+            <div class="card-large" style="margin-top: 4rem; padding: 2rem; border-color: #00FF94;">
+                <h3 style="margin-bottom: 1rem; color: #00FF94;">ZAR Testnet Faucet</h3>
+                <p style="color: var(--text-dim); margin-bottom: 1.5rem;">Need ZAR to test out the network? Request 10
+                    free ZAR below.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <input type="text" id="faucetAddr" placeholder="Enter your 0x address"
+                        style="flex: 1; max-width: 400px; padding: 0.8rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white;">
+                    <button onclick="requestFaucet()" class="btn"
+                        style="background: #00FF94; box-shadow: 0 5px 20px rgba(0, 255, 148, 0.2);">Request ZAR</button>
+                </div>
+                <p id="faucetStatus" style="margin-top: 1rem; font-size: 0.9rem;"></p>
+            </div>
+        </section>
+    </main>
+
+
+    <footer style="padding: 4rem 0; text-align: center; border-top: 1px solid var(--glass-border); margin-top: 8rem;">
+        <p style="color: var(--text-dim);">© 2026 ZAR Blockchain Project. A Fair Launch Initiative.</p>
+    </footer>
+
+    <script>
+        // --- PRODUCTION SETUP ---
+        // 1. Replace '127.0.0.1' with your DuckDNS domain (e.g., 'zar-chain.duckdns.org')
+        // 2. Ensure your node PC has port 8545 open on the router!
+        const RPC_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+            ? 'http://127.0.0.1:8545'
+            : 'https://zar-chain.duckdns.org'; // <--- Replace with your DuckDNS
+
+        async function fetchBlocks() {
+            try {
+                const response = await fetch(RPC_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        method: 'eth_blockNumber',
+                        params: [],
+                        id: 1
+                    })
+                });
+                const data = await response.json();
+                console.log("RPC Response:", data);
+                const latestBlock = parseInt(data.result, 16);
+                document.getElementById('totalBlocks').innerText = latestBlock + 1;
+                document.getElementById('blockBody').innerHTML = ''; // Clear status
+                renderMockBlocks(latestBlock);
+            } catch (error) {
+                console.error("RPC Connection Error:", error);
+                document.getElementById('totalBlocks').innerText = "Error";
+            }
+        }
+
+        function renderMockBlocks(latest) {
+            const body = document.getElementById('blockBody');
+            body.innerHTML = '';
+            for (let i = latest; i >= Math.max(0, latest - 5); i--) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${i}</td>
+                    <td>${new Date().toLocaleTimeString()}</td>
+                    <td class="hash">0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 10)}</td>
+                    <td>Miner Reward (60 ZAR)</td>
+                `;
+                body.appendChild(tr);
+            }
+        }
+
+        async function fetchPrices() {
+            try {
+                const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,solana&vs_currencies=usd');
+                const data = await resp.json();
+                document.getElementById('btcPrice').innerText = `$${data.bitcoin.usd.toLocaleString()}`;
+                document.getElementById('solPrice').innerText = `$${data.solana.usd.toLocaleString()}`;
+            } catch (err) { }
+        }
+
+        async function addToMetaMask() {
+            if (!window.ethereum) {
+                alert("MetaMask not found! Please install the MetaMask extension in your browser to use this feature.");
+                return;
+            }
+            const params = [{
+                chainId: '0x7a5',
+                chainName: 'ZAR Blockchain',
+                nativeCurrency: {
+                    name: 'ZAR Coin',
+                    symbol: 'ZAR',
+                    decimals: 18
+                },
+                rpcUrls: [RPC_URL],
+                blockExplorerUrls: [window.location.href]
+            }];
+
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: params
+                });
+            } catch (error) {
+                alert("Metamask not detected or error: " + error.message);
+            }
+        }
+
+        async function requestFaucet() {
+            const addr = document.getElementById('faucetAddr').value;
+            if (!addr.startsWith('0x')) {
+                alert("Please enter a valid 0x address.");
+                return;
+            }
+
+            document.getElementById('faucetStatus').innerText = "Requesting ZAR...";
+            try {
+                const response = await fetch(RPC_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        method: 'zar_requestFaucet',
+                        params: [addr],
+                        id: 1
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('faucetStatus').innerText = data.result || "Success!";
+                fetchBlocks(); // Refresh block count
+            } catch (err) {
+                document.getElementById('faucetStatus').innerText = "Error connecting to node.";
+            }
+        }
+
+        // Initialize
+
+        fetchBlocks();
+        fetchPrices();
+        setInterval(fetchBlocks, 10000); // Update every 10s
+    </script>
+</body>
+
+</html>
