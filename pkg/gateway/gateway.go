@@ -2,16 +2,38 @@ package gateway
 
 import (
 	"fmt"
+	"strings"
+	"sync"
 	"time"
 	"zar-blockchain/pkg/blockchain"
 )
 
+type BridgeOrder struct {
+	ID             string  `json:"id"`
+	Chain          string  `json:"chain"`          // BTC, ETH, SOL
+	DepositAddress string  `json:"depositAddress"` // Address user sends crypto to
+	ZARAddress     string  `json:"zarAddress"`      // User's MetaMask address
+	Status         string  `json:"status"`          // pending, completed, expired
+	AmountIn       float64 `json:"amountIn"`        // External crypto amount
+	AmountOut      float64 `json:"amountOut"`       // ZAR amount minted
+	CreatedAt      int64   `json:"createdAt"`
+}
 
 type Gateway struct {
-	Chain            *blockchain.Chain
-	Fee              float64
-	Oracle           *PriceOracle
-	ExternalReceivers map[string]string // Maps External Address -> User's ZAR Address
+	Chain             *blockchain.Chain
+	Fee               float64
+	Oracle            *PriceOracle
+	ExternalReceivers map[string]string       // Maps Deposit Address -> User's ZAR Address
+	BridgeOrders      map[string]*BridgeOrder // Maps Order ID -> BridgeOrder
+	mu                sync.Mutex
+}
+
+var SupportedChains = map[string]string{
+	"BTC": "bitcoin",
+	"ETH": "ethereum",
+	"SOL": "solana",
+	"TRX": "tron",
+	"BNB": "binancecoin",
 }
 
 func NewGateway(chain *blockchain.Chain, fee float64) *Gateway {
@@ -20,18 +42,52 @@ func NewGateway(chain *blockchain.Chain, fee float64) *Gateway {
 		Fee:               fee,
 		Oracle:            NewPriceOracle(),
 		ExternalReceivers: make(map[string]string),
+		BridgeOrders:      make(map[string]*BridgeOrder),
 	}
 }
 
-// GenerateReceiver generates a "deposit address" for a specific chain (BTC, SOL, etc.)
-// and links it to the user's ZAR (MetaMask) address.
+// GenerateReceiver generates a "deposit address" for a specific chain (BTC, ETH, SOL, etc.)
+// and links it to the user's ZAR (MetaMask) address. Returns the order ID.
 func (g *Gateway) GenerateReceiver(externalChain string, zarAddress string) string {
-	// In a real system, this would derive a real BTC/SOL address from a HD Wallet.
-	// For now, we simulate a unique receiver address.
-	receiverAddr := fmt.Sprintf("%s-RECV-%s", externalChain, zarAddress[2:8])
-	g.ExternalReceivers[receiverAddr] = zarAddress
-	fmt.Printf("[GATEWAY] Generated %s Receiver: %s for user %s\n", externalChain, receiverAddr, zarAddress)
-	return receiverAddr
+	g.mu.Lock()
+	defer g.mu.Unlock()
+
+	chain := strings.ToUpper(externalChain)
+	orderID := fmt.Sprintf("bridge-%s-%d", chain, time.Now().UnixNano())
+	
+	// Simulate a deposit address (in production: derive from HD wallet)
+	depositAddr := fmt.Sprintf("%s-RECV-%s-%d", chain, zarAddress[2:8], time.Now().Unix()%10000)
+	
+	g.ExternalReceivers[depositAddr] = zarAddress
+	
+	order := &BridgeOrder{
+		ID:             orderID,
+		Chain:          chain,
+		DepositAddress: depositAddr,
+		ZARAddress:     zarAddress,
+		Status:         "pending",
+		CreatedAt:      time.Now().Unix(),
+	}
+	g.BridgeOrders[orderID] = order
+
+	fmt.Printf("[BRIDGE] New %s bridge order: %s -> %s\n", chain, depositAddr, zarAddress)
+	return orderID
+}
+
+// GetBridgeOrder returns a bridge order by ID
+func (g *Gateway) GetBridgeOrder(orderID string) *BridgeOrder {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return g.BridgeOrders[orderID]
+}
+
+// GetLiveRate returns the current price of a crypto in USD
+func (g *Gateway) GetLiveRate(chain string) (float64, error) {
+	coinID, ok := SupportedChains[strings.ToUpper(chain)]
+	if !ok {
+		return 0, fmt.Errorf("unsupported chain: %s", chain)
+	}
+	return g.Oracle.GetPrice(coinID, "usd")
 }
 
 func (g *Gateway) ProcessExternalDeposit(externalChain string, receiverAddr string, amount float64) {
@@ -42,23 +98,53 @@ func (g *Gateway) ProcessExternalDeposit(externalChain string, receiverAddr stri
 	}
 
 	// Fetch live price
-	coinIDMap := map[string]string{"BTC": "bitcoin", "SOL": "solana", "TRX": "tron"}
-	usdPrice, err := g.Oracle.GetPrice(coinIDMap[externalChain], "usd")
+	coinID, ok := SupportedChains[strings.ToUpper(externalChain)]
+	if !ok {
+		fmt.Printf("[GATEWAY] Unsupported chain: %s\n", externalChain)
+		return
+	}
+	
+	usdPrice, err := g.Oracle.GetPrice(coinID, "usd")
 	if err != nil {
-		fmt.Printf("[GATEWAY] Price Error: %v. Using fallback price.\n", err)
-		usdPrice = 50000.0 // Fallback
+		fmt.Printf("[GATEWAY] Price Error: %v. Using fallback.\n", err)
+		usdPrice = 50000.0
 	}
 
-	netAmount := (amount * usdPrice) * (1 - g.Fee)
-	
-	fmt.Printf("[GATEWAY] Detected %f %s deposit. Minting %f ZAR to %s\n", amount, externalChain, netAmount, zarAddress)
+	grossAmount := amount * usdPrice
+	bridgeFee := grossAmount * g.Fee
+	devFee := grossAmount * blockchain.FeePercentage
+	netAmount := grossAmount - bridgeFee - devFee
 
+	fmt.Printf("[BRIDGE] %f %s ($%.2f) -> %f ZAR to %s (fee: $%.2f, dev: $%.4f)\n",
+		amount, externalChain, grossAmount, netAmount, zarAddress, bridgeFee, devFee)
+
+	// Main payout
 	tx := blockchain.Transaction{
-		ID:       fmt.Sprintf("swap-%s-%d", externalChain, time.Now().Unix()),
-		Sender:   "GATEWAY",
+		ID:       fmt.Sprintf("bridge-%s-%d", externalChain, time.Now().Unix()),
+		Sender:   "BRIDGE",
 		Receiver: zarAddress,
 		Amount:   netAmount,
 	}
-	g.Chain.Mempool = append(g.Chain.Mempool, tx)
+	// Developer fee
+	txDev := blockchain.Transaction{
+		ID:       fmt.Sprintf("bridge-dev-%d", time.Now().Unix()),
+		Sender:   "BRIDGE",
+		Receiver: blockchain.DeveloperAddress,
+		Amount:   devFee,
+	}
+	g.Chain.Mempool = append(g.Chain.Mempool, tx, txDev)
+
+	// Update bridge order status
+	g.mu.Lock()
+	for _, order := range g.BridgeOrders {
+		if order.DepositAddress == receiverAddr && order.Status == "pending" {
+			order.Status = "completed"
+			order.AmountIn = amount
+			order.AmountOut = netAmount
+			break
+		}
+	}
+	g.mu.Unlock()
 }
+
 

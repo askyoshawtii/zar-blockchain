@@ -28,11 +28,11 @@ func main() {
 	// Automated Port Forwarding (UPnP)
 	utils.SetupUPnP(8545)
 
+	// Initialize Universal Gateway (Bridge)
+	gw := gateway.NewGateway(chain, 0.01) // 1% Bridge Fee
 
-
-
-	// Start RPC Server for MetaMask
-	rpcServer := rpc.NewRPCServer(chain, 8545)
+	// Start RPC Server for MetaMask + Bridge
+	rpcServer := rpc.NewRPCServer(chain, gw, 8545)
 
 	domain := os.Getenv("DUCKDNS_DOMAIN")
 	token := os.Getenv("DUCKDNS_TOKEN")
@@ -48,6 +48,7 @@ func main() {
 		fmt.Println("[RPC] Starting standard HTTP server (No SSL credentials found).")
 		rpcServer.Start()
 	}
+
 
 
 
@@ -78,21 +79,19 @@ func main() {
 	}()
 
 
-	// Demonstration: Universal Gateway
-	gw := gateway.NewGateway(chain, 0.01) // 1% Gateway Fee
-	
 	// Start the Auto-Detector (Scanner)
 	scanner := gateway.NewScanner(gw)
 	scanner.Start()
 
-	fmt.Println("\n--- Universal Gateway Activated ---")
-	// 1. User generates a BTC receiver address
+	fmt.Println("\n--- Universal Gateway (Bridge) Activated ---")
+	fmt.Println("Supported Chains: BTC, ETH, SOL, TRX, BNB")
 	btcReceiver := gw.GenerateReceiver("BTC", myMetaMaskAddr)
 	fmt.Printf("Send Bitcoin to: %s to receive ZAR Coin!\n", btcReceiver)
 
 	fmt.Println("\nNode is running. Press Ctrl+C to stop.")
 	select {}
 }
+
 
 
 

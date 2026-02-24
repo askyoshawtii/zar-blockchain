@@ -11,14 +11,16 @@ import (
 	"sync"
 	"time"
 	"zar-blockchain/pkg/blockchain"
+	"zar-blockchain/pkg/gateway"
 )
 
 type RPCServer struct {
-	Chain  *blockchain.Chain
-	Port   int
-	nonces map[string]uint64   // Track nonces per address
-	txLog  map[string]*TxEntry // Track submitted transactions by hash
-	mu     sync.Mutex
+	Chain   *blockchain.Chain
+	Gateway *gateway.Gateway
+	Port    int
+	nonces  map[string]uint64
+	txLog   map[string]*TxEntry
+	mu      sync.Mutex
 }
 
 type TxEntry struct {
@@ -44,12 +46,13 @@ type JSONRPCResponse struct {
 	ID      interface{} `json:"id"`
 }
 
-func NewRPCServer(chain *blockchain.Chain, port int) *RPCServer {
+func NewRPCServer(chain *blockchain.Chain, gw *gateway.Gateway, port int) *RPCServer {
 	return &RPCServer{
-		Chain:  chain,
-		Port:   port,
-		nonces: make(map[string]uint64),
-		txLog:  make(map[string]*TxEntry),
+		Chain:   chain,
+		Gateway: gw,
+		Port:    port,
+		nonces:  make(map[string]uint64),
+		txLog:   make(map[string]*TxEntry),
 	}
 }
 
@@ -264,7 +267,86 @@ func (s *RPCServer) handleRPC(w http.ResponseWriter, r *http.Request) {
 		s.Chain.MinePendingTransactions("FAUCET_MINER", "0xSTAKER", "0xTREASURY")
 		result = fmt.Sprintf("Success! %f ZAR sent to your address.", userAmount)
 
+	// ─── ZAR Bridge: Cross-Chain Swap ───
+	case "zar_bridge":
+		// Params: [chain, zarAddress]  e.g. ["BTC", "0xA048..."]
+		if len(req.Params) < 2 {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Params: [chain, zarAddress]"}
+			break
+		}
+		chain, ok1 := req.Params[0].(string)
+		zarAddr, ok2 := req.Params[1].(string)
+		if !ok1 || !ok2 || len(zarAddr) < 42 {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Invalid parameters"}
+			break
+		}
+		if s.Gateway == nil {
+			rpcErr = map[string]interface{}{"code": -32000, "message": "Bridge not initialized"}
+			break
+		}
+		orderID := s.Gateway.GenerateReceiver(chain, zarAddr)
+		order := s.Gateway.GetBridgeOrder(orderID)
+		if order == nil {
+			rpcErr = map[string]interface{}{"code": -32000, "message": "Failed to create bridge order"}
+			break
+		}
+
+		// Get live rate for display
+		rate, _ := s.Gateway.GetLiveRate(chain)
+
+		result = map[string]interface{}{
+			"orderId":        order.ID,
+			"chain":          order.Chain,
+			"depositAddress": order.DepositAddress,
+			"zarAddress":     order.ZARAddress,
+			"status":         order.Status,
+			"rateUSD":        rate,
+			"fee":            fmt.Sprintf("%.2f%%", s.Gateway.Fee*100),
+			"message":        fmt.Sprintf("Send %s to the deposit address. ZAR will be minted automatically.", chain),
+		}
+
+	case "zar_bridgeRate":
+		// Params: [chain] e.g. ["BTC"]
+		if len(req.Params) < 1 {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Params: [chain]"}
+			break
+		}
+		chain, ok := req.Params[0].(string)
+		if !ok {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Invalid chain"}
+			break
+		}
+		rate, err := s.Gateway.GetLiveRate(chain)
+		if err != nil {
+			rpcErr = map[string]interface{}{"code": -32000, "message": err.Error()}
+			break
+		}
+		result = map[string]interface{}{
+			"chain":   strings.ToUpper(chain),
+			"rateUSD": rate,
+			"fee":     fmt.Sprintf("%.2f%%", s.Gateway.Fee*100),
+		}
+
+	case "zar_bridgeStatus":
+		// Params: [orderId]
+		if len(req.Params) < 1 {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Params: [orderId]"}
+			break
+		}
+		orderID, ok := req.Params[0].(string)
+		if !ok {
+			rpcErr = map[string]interface{}{"code": -32602, "message": "Invalid order ID"}
+			break
+		}
+		order := s.Gateway.GetBridgeOrder(orderID)
+		if order == nil {
+			rpcErr = map[string]interface{}{"code": -32000, "message": "Order not found"}
+			break
+		}
+		result = order
+
 	default:
+
 		// Return null for unknown methods instead of error (MetaMask probes many methods)
 		result = nil
 	}
