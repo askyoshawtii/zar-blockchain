@@ -523,18 +523,22 @@
             let provider = window.ethereum;
 
             if (window.ethereum && window.ethereum.providers) {
-                provider = window.ethereum.providers.find((p) => p.isMetaMask) || window.ethereum;
+                provider = window.ethereum.providers.find((p) => p.isMetaMask);
             }
 
             if (!provider || !provider.isMetaMask) {
-                const isTrust = provider && provider.isTrust;
-                if (isTrust) {
-                    const confirmMM = confirm("Trust Wallet is currently set as your default wallet and is blocking MetaMask. \n\nTo use MetaMask:\n1. Open Trust Wallet settings\n2. Disable 'Set as default wallet'\n3. Refresh this page.\n\nWould you like to try connecting with Trust Wallet anyway?");
-                    if (!confirmMM) return;
-                } else {
-                    alert("MetaMask not found! Please install the MetaMask extension to use this feature.");
-                    return;
+                if (window.ethereum && window.ethereum.isMetaMask && !window.ethereum.isTrust) {
+                    provider = window.ethereum;
                 }
+            }
+
+            if (!provider || !provider.isMetaMask) {
+                const isTrust = provider && (provider.isTrust || window.ethereum.isTrust);
+                const msg = isTrust
+                    ? "Trust Wallet is currently overriding MetaMask. \n\nTo fix this:\n1. Open Trust Wallet Extension\n2. Settings -> Set as Default Wallet -> OFF\n3. Refresh this page."
+                    : "MetaMask not found! Please install the MetaMask extension in your browser to use this feature.";
+                alert(msg);
+                return;
             }
 
             const params = [{
