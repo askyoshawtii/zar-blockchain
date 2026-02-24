@@ -20,8 +20,11 @@ func (s *RPCServer) StartTLS(domain, token string) {
 
 	// Configure CertMagic
 	certmagic.DefaultACME.Agreed = true
+	certmagic.DefaultACME.Email = "admin@zar-chain.org" // Used for SSL registration
 	certmagic.DefaultACME.DNS01Solver = &certmagic.DNS01Solver{
-		DNSProvider: provider,
+		DNSManager: certmagic.DNSManager{
+			DNSProvider: provider,
+		},
 	}
 
 	magic := certmagic.NewDefault()

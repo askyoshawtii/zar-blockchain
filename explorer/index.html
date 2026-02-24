@@ -459,11 +459,21 @@
             ? 'http://127.0.0.1:8545'
             : 'https://zar-chain.duckdns.org:8545');
 
-        // FORCE HTTPS for DuckDNS (Now that node supports it)
+        // SANITIZE: If RPC_URL is an address (starts with 0x), RESET IT
+        if (RPC_URL.startsWith("0x")) {
+            console.error("Corrupt RPC URL detected (was a wallet address). Resetting to default.");
+            RPC_URL = 'https://zar-chain.duckdns.org:8545';
+            localStorage.setItem('ZAR_RPC_URL', RPC_URL);
+        }
+
+        // FORCE HTTPS for DuckDNS
         if (RPC_URL.includes("duckdns.org") && RPC_URL.startsWith("http://")) {
             RPC_URL = RPC_URL.replace("http://", "https://");
             localStorage.setItem('ZAR_RPC_URL', RPC_URL);
         }
+
+        if (RPC_URL.endsWith("//")) RPC_URL = RPC_URL.slice(0, -1);
+
 
 
         function setManualRPC() {
@@ -548,26 +558,26 @@
         }
 
         async function addToMetaMask() {
-            let provider = window.ethereum;
+            // AGGRESSIVE DETECTION: Specifically look for MetaMask anywhere in the ethereum object
+            let provider = null;
 
-            if (window.ethereum && window.ethereum.providers) {
-                provider = window.ethereum.providers.find((p) => p.isMetaMask);
-            }
-
-            if (!provider || !provider.isMetaMask) {
-                if (window.ethereum && window.ethereum.isMetaMask && !window.ethereum.isTrust) {
+            if (window.ethereum) {
+                if (window.ethereum.providers) {
+                    provider = window.ethereum.providers.find(p => p.isMetaMask && !p.isTrust);
+                    if (!provider) provider = window.ethereum.providers.find(p => p.isMetaMask);
+                } else if (window.ethereum.isMetaMask && !window.ethereum.isTrust) {
                     provider = window.ethereum;
                 }
             }
 
-            if (!provider || !provider.isMetaMask) {
-                const isTrust = provider && (provider.isTrust || window.ethereum.isTrust);
-                const msg = isTrust
-                    ? "Trust Wallet is currently overriding MetaMask. \n\nTo fix this:\n1. Open Trust Wallet Extension\n2. Settings -> Set as Default Wallet -> OFF\n3. Refresh this page."
-                    : "MetaMask not found! Please install the MetaMask extension in your browser to use this feature.";
-                alert(msg);
+            // CRITICAL: If Trust Wallet is still hijacking window.ethereum
+            if (!provider || (provider.isTrust && !provider.isMetaMask)) {
+                alert("❌ WALLET CONFLICT DETECTED!\n\nTrust Wallet is currently 'Hijacking' your browser's connection and blocking MetaMask.\n\nHOW TO FIX:\n1. Open Trust Wallet extension settings.\n2. Turn OFF 'Set as default wallet'.\n3. Refresh this page and try again.");
                 return;
             }
+
+            console.log("Connecting using provider:", provider);
+
 
             const params = [{
                 chainId: '0x7a5',
