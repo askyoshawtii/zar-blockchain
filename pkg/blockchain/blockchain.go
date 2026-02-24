@@ -43,19 +43,24 @@ func (c *Chain) AddBlock(block *Block) error {
 	return nil
 }
 
-func (c *Chain) MinePendingTransactions(minerAddress string) {
-	// Simple reward system: 60 ZAR to miner
-	rewardTx := Transaction{
-		ID:       fmt.Sprintf("reward-%d", len(c.Blocks)),
-		Sender:   "SYSTEM",
-		Receiver: minerAddress,
-		Amount:   60.0,
+func (c *Chain) MinePendingTransactions(minerAddress string, stakerAddress string, treasuryAddress string) {
+	// Total Reward: 60 ZAR
+	totalReward := 60.0
+	minerReward := totalReward * 0.60
+	stakerReward := totalReward * 0.30
+	treasuryReward := totalReward * 0.10
+
+	rewards := []Transaction{
+		{ID: fmt.Sprintf("miner-reward-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: minerAddress, Amount: minerReward},
+		{ID: fmt.Sprintf("staker-reward-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: stakerAddress, Amount: stakerReward},
+		{ID: fmt.Sprintf("treasury-reward-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: treasuryAddress, Amount: treasuryReward},
 	}
 	
-	txs := append(c.Mempool, rewardTx)
+	txs := append(c.Mempool, rewards...)
 	c.Mempool = []Transaction{}
 
 	newBlock := NewBlock(int64(len(c.Blocks)), c.GetLatestBlock().Hash, txs, c.Difficulty)
 	newBlock.Mine()
 	c.AddBlock(newBlock)
 }
+
