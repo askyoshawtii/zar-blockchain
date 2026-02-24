@@ -725,9 +725,9 @@
     },
     {
       "index": 22,
-      "timestamp": 1771960027,
+      "timestamp": 1771960026,
       "prev_hash": "000082cbc0bc090dc3df811647234633e792ba45007dbc356bc570709c0c1656",
-      "hash": "00004ef8862d887feeca49d1d8b6928512703107b0b2e555440b658fb98445e7",
+      "hash": "0000642e20934c73aa1ec9bda5bbe4ae7acded5b1fed528340c1c32fe83b1f80",
       "transactions": [
         {
           "id": "miner-reward-22",
@@ -754,15 +754,151 @@
           "signature": ""
         }
       ],
-      "nonce": 35364,
+      "nonce": 18240,
+      "difficulty": 4
+    },
+    {
+      "index": 23,
+      "timestamp": 1771960036,
+      "prev_hash": "0000642e20934c73aa1ec9bda5bbe4ae7acded5b1fed528340c1c32fe83b1f80",
+      "hash": "0000b7d0c25b638148ac4fa3dd2101789357da98223ceaa5a2b3e6c40875fd83",
+      "transactions": [
+        {
+          "id": "miner-reward-23",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 6,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-23",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 3,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-23",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 1,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 21920,
+      "difficulty": 4
+    },
+    {
+      "index": 24,
+      "timestamp": 1771960046,
+      "prev_hash": "0000b7d0c25b638148ac4fa3dd2101789357da98223ceaa5a2b3e6c40875fd83",
+      "hash": "0000e3c173494d0bedca231adf01cf66827db6c863a0325445d91e2dd29e899d",
+      "transactions": [
+        {
+          "id": "miner-reward-24",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 6,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-24",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 3,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-24",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 1,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 88884,
+      "difficulty": 4
+    },
+    {
+      "index": 25,
+      "timestamp": 1771960057,
+      "prev_hash": "0000e3c173494d0bedca231adf01cf66827db6c863a0325445d91e2dd29e899d",
+      "hash": "0000246be189feea1bf6d4f6207cf916641e6366ed82d0e384dbd9a06a885011",
+      "transactions": [
+        {
+          "id": "miner-reward-25",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 6,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-25",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 3,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-25",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 1,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 45418,
+      "difficulty": 4
+    },
+    {
+      "index": 26,
+      "timestamp": 1771960067,
+      "prev_hash": "0000246be189feea1bf6d4f6207cf916641e6366ed82d0e384dbd9a06a885011",
+      "hash": "000050737990f1fb8ba7ccda0dc4aea6ee0c8a5e9596a233af566caf9071b45a",
+      "transactions": [
+        {
+          "id": "miner-reward-26",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 6,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-26",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 3,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-26",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 1,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 10246,
       "difficulty": 4
     }
   ],
   "difficulty": 4,
   "mempool": [],
   "balances": {
-    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 252,
-    "0xStakerAddress1234567890abcdef": 126,
-    "0xTreasuryFundAddress1234567890abcdef": 42
+    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 276,
+    "0xStakerAddress1234567890abcdef": 138,
+    "0xTreasuryFundAddress1234567890abcdef": 46
   }
 }
