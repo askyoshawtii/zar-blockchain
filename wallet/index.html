@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAR Wallet | Secure, Fast, Sovereign</title>
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFD700;
+            --bg: #0A0A0B;
+            --card-bg: rgba(20, 20, 22, 0.8);
+            --text: #FFFFFF;
+            --text-dim: #A0A0A5;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .app-container {
+            max-width: 450px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+        }
+
+        .logo {
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: var(--bg);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .balance-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .balance-symbol {
+            font-size: 1rem;
+            opacity: 0.6;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: 16px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
+        .action-btn svg {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+
+        .tx-list {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-top-left-radius: 32px;
+            border-top-right-radius: 32px;
+            margin: 0 -1.5rem -1.5rem;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .tx-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .tx-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .tx-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .tx-type {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .tx-date {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .tx-amount {
+            font-weight: 700;
+            color: #00FF94;
+        }
+
+        .tx-amount.neg {
+            color: #FF4B4B;
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: var(--bg);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--primary);
+            color: var(--bg);
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-close {
+            margin-top: 1rem;
+            background: transparent;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">Z</div> ZAR WALLET
+            </div>
+            <div onclick="settings()" style="cursor: pointer;"><svg width="24" height="24" fill="currentColor"
+                    viewBox="0 0 24 24">
+                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                    <path fill-rule="evenodd"
+                        d="M18.188 19.303a9.746 9.746 0 01-1.933 1.25c-.27.13-.564.24-.88.33s-.664.152-1.042.188a10.22 10.22 0 01-4.666 0 10.15 10.15 0 01-1.043-.188c-.315-.09-.609-.2-.879-.33a9.74 9.74 0 01-1.933-1.25c-.244-.216-.464-.452-.656-.704a10.05 10.05 0 01-1.1-1.848c-.147-.365-.262-.76-.34-1.18a10.875 10.875 0 010-4.144c.078-.42.193-.816.34-1.18.175-.436.38-.865.61-1.284.18-.323.385-.632.613-.923.111-.14.23-.274.354-.401a9.75 9.75 0 011.933-1.25c.27-.13.564-.24.88-.33s.664-.152 1.042-.188a10.22 10.22 0 014.666 0c.378.036.726.1 1.043.188.315.09.61.2.879.33a9.743 9.743 0 011.933 1.25c.125.127.243.261.354.401.228.29.432.6.613.923.23.42.435.848.61 1.284.147.364.262.76.34 1.18.077.417.077.854.077 1.3 0 .23 0 .445-.01.657v1.1c.01.212.01.428.01.657 0 .446 0 .883-.077 1.3a10.45 10.45 0 01-.34 1.18 10.05 10.05 0 01-1.1 1.848c-.192.252-.412.488-.656.704zM12 16.5a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" />
+                </svg></div>
+        </header>
+
+        <div class="balance-card">
+            <div class="balance-label">Total Balance</div>
+            <div class="balance-value" id="balance">0.00 <span class="balance-symbol">ZAR</span></div>
+            <div id="addr" style="font-size: 0.7rem; color: var(--text-dim); margin-top: 1rem; font-family: monospace;">
+                0x...</div>
+        </div>
+
+        <div class="actions">
+            <div class="action-btn" onclick="openModal('sendModal')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                <span>Send</span>
+            </div>
+            <div class="action-btn" onclick="openModal('recvModal')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+                <span>Receive</span>
+            </div>
+        </div>
+
+        <div class="tx-list">
+            <div class="tx-header">
+                <h3 style="font-size: 1rem;">Activity</h3>
+                <span style="color: var(--primary); font-size: 0.8rem; font-weight: 600;">View All</span>
+            </div>
+            <div id="activity">
+                <div style="text-align: center; color: var(--text-dim); padding-top: 2rem;">No recent activity</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send Modal -->
+    <div id="sendModal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 1.5rem;">Send ZAR</h2>
+            <input type="text" id="sendTo" placeholder="Recipient 0x Address">
+            <input type="number" id="sendAmount" placeholder="Amount">
+            <button class="btn" onclick="sendZAR()">Confirm Send</button>
+            <button class="btn btn-close" onclick="closeModal('sendModal')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Receive Modal -->
+    <div id="recvModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h2 style="margin-bottom: 1rem;">Your Address</h2>
+            <div id="qrPlaceholder"
+                style="width: 200px; height: 200px; background: white; margin: 0 auto 1.5rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: black; font-weight: 800;">
+                [QR CODE]</div>
+            <p id="fullAddr"
+                style="font-family: monospace; font-size: 0.8rem; word-break: break-all; margin-bottom: 1.5rem;"></p>
+            <button class="btn" onclick="copyAddr()">Copy Address</button>
+            <button class="btn btn-close" onclick="closeModal('recvModal')">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // RPC Setup
+        const RPC_URL = localStorage.getItem('ZAR_RPC_URL') || 'http://127.0.0.1:8545';
+
+        // Wallet State
+        let wallet = JSON.parse(localStorage.getItem('ZAR_WALLET')) || null;
+
+        if (!wallet) {
+            // Create a dummy wallet for demo if none exists
+            const dummyAddr = "0x" + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+            wallet = { address: dummyAddr, privKey: "secret..." };
+            localStorage.setItem('ZAR_WALLET', JSON.stringify(wallet));
+        }
+
+        document.getElementById('addr').innerText = wallet.address.slice(0, 6) + "..." + wallet.address.slice(-4);
+        document.getElementById('fullAddr').innerText = wallet.address;
+
+        async function fetchBalance() {
+            try {
+                const resp = await fetch(RPC_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: "2.0",
+                        method: "eth_getBalance",
+                        params: [wallet.address, "latest"],
+                        id: 1
+                    })
+                });
+                const data = await resp.json();
+                if (data.result) {
+                    const balance = parseInt(data.result, 16) / 1e18;
+                    document.getElementById('balance').innerText = balance.toFixed(2);
+                }
+            } catch (e) {
+                console.log("Balance fetch error:", e);
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        async function sendZAR() {
+            const to = document.getElementById('sendTo').value;
+            const amount = document.getElementById('sendAmount').value;
+            alert(`Sending ${amount} ZAR to ${to}...\n(Transaction signing would happen here)`);
+            closeModal('sendModal');
+        }
+
+        function copyAddr() {
+            navigator.clipboard.writeText(wallet.address);
+            alert("Address copied!");
+        }
+
+        // PWA Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        fetchBalance();
+        setInterval(fetchBalance, 10000);
+    </script>
+</body>
+
+</html>
