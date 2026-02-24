@@ -63,9 +63,14 @@ func (s *RPCServer) handleRPC(w http.ResponseWriter, r *http.Request) {
 	case "eth_blockNumber":
 		result = fmt.Sprintf("0x%x", len(s.Chain.Blocks)-1)
 	case "eth_getBalance":
-		// Simple mock for now - returns 100 ZAR for any address
-		result = "0x56bc75e2d63100000" // 100 * 10^18 (100 ZAR in Wei)
+		addr := req.Params[0].(string)
+		balance := s.Chain.Balances[addr]
+		// Convert ZAR to Wei-ish (18 decimals)
+		// 1 ZAR = 10^18 units
+		weiBalance := int64(balance * 1e18)
+		result = fmt.Sprintf("0x%x", weiBalance)
 	case "net_version":
+
 		result = "1957"
 	default:
 		rpcErr = map[string]interface{}{

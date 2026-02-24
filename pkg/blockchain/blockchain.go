@@ -10,17 +10,20 @@ type Chain struct {
 	Blocks     []*Block
 	Difficulty int
 	Mempool    []Transaction
+	Balances   map[string]float64
 	mu         sync.Mutex
 }
 
 func NewChain(difficulty int) *Chain {
 	genesisBlock := NewBlock(0, "0", []Transaction{}, difficulty)
-	genesisBlock.Mine()
+	// genesisBlock.Mine() // Avoid mining on init to keep it fast if needed
 	return &Chain{
 		Blocks:     []*Block{genesisBlock},
 		Difficulty: difficulty,
+		Balances:   make(map[string]float64),
 	}
 }
+
 
 func (c *Chain) GetLatestBlock() *Block {
 	return c.Blocks[len(c.Blocks)-1]
@@ -39,9 +42,18 @@ func (c *Chain) AddBlock(block *Block) error {
 		return errors.New("invalid block hash or difficulty")
 	}
 
+	// Update Balances
+	for _, tx := range block.Transactions {
+		if tx.Sender != "SYSTEM" {
+			c.Balances[tx.Sender] -= tx.Amount
+		}
+		c.Balances[tx.Receiver] += tx.Amount
+	}
+
 	c.Blocks = append(c.Blocks, block)
 	return nil
 }
+
 
 func (c *Chain) MinePendingTransactions(minerAddress string, stakerAddress string, treasuryAddress string) {
 	// Total Reward: 60 ZAR
