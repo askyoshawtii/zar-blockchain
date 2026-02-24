@@ -1402,13 +1402,81 @@
       ],
       "nonce": 30069158,
       "difficulty": 6
+    },
+    {
+      "index": 42,
+      "timestamp": 1771961718,
+      "prev_hash": "000000bc9caf26efaebf671dd65eac0c7338faeb56ba679710509d242d623644",
+      "hash": "000000ac97d56b3cf541a2a1e4f9d207218e1ed342a056e47a97cb3037a46b49",
+      "transactions": [
+        {
+          "id": "miner-reward-42",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 6,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-42",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 3,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-42",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 1,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 1121007,
+      "difficulty": 6
+    },
+    {
+      "index": 43,
+      "timestamp": 1771961800,
+      "prev_hash": "000000ac97d56b3cf541a2a1e4f9d207218e1ed342a056e47a97cb3037a46b49",
+      "hash": "000000d9544bf31a684735d522f00910e203e9143258115d52f0dcc7059afbbb",
+      "transactions": [
+        {
+          "id": "miner-reward-43",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 6,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-43",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 3,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-43",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 1,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 6610629,
+      "difficulty": 6
     }
   ],
   "difficulty": 6,
   "mempool": [],
   "balances": {
-    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 366,
-    "0xStakerAddress1234567890abcdef": 183,
-    "0xTreasuryFundAddress1234567890abcdef": 61
+    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 378,
+    "0xStakerAddress1234567890abcdef": 189,
+    "0xTreasuryFundAddress1234567890abcdef": 63
   }
 }

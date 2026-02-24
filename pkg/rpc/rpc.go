@@ -93,17 +93,26 @@ func (s *RPCServer) handleRPC(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		faucetAmount := 10.0
-		fmt.Printf("[FAUCET] Sending %f ZAR to %s\n", faucetAmount, addr)
+		devFee := faucetAmount * blockchain.FeePercentage
+		userAmount := faucetAmount - devFee
+
+		fmt.Printf("[FAUCET] Sending %f ZAR to %s and %f ZAR fee to developer\n", userAmount, addr, devFee)
 		
-		tx := blockchain.Transaction{
+		txUser := blockchain.Transaction{
 			ID:       fmt.Sprintf("faucet-%d", time.Now().Unix()),
 			Sender:   "FAUCET",
 			Receiver: addr,
-			Amount:   faucetAmount,
+			Amount:   userAmount,
 		}
-		s.Chain.Mempool = append(s.Chain.Mempool, tx)
+		txFee := blockchain.Transaction{
+			ID:       fmt.Sprintf("faucet-fee-%d", time.Now().Unix()),
+			Sender:   "FAUCET",
+			Receiver: blockchain.DeveloperAddress,
+			Amount:   devFee,
+		}
+		s.Chain.Mempool = append(s.Chain.Mempool, txUser, txFee)
 		s.Chain.MinePendingTransactions("FAUCET_MINER", "0xSTAKER", "0xTREASURY")
-		result = "10 ZAR sent to your address!"
+		result = fmt.Sprintf("Success! %f ZAR sent to your address (%f ZAR dev fee applied).", userAmount, devFee)
 	default:
 		rpcErr = map[string]interface{}{
 			"code":    -32601,

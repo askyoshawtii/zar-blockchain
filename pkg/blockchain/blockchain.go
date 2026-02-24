@@ -5,9 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"sync"
 )
 
+const DeveloperAddress = "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b"
+const FeePercentage = 0.0001 // 0.01%
 
 type Chain struct {
 	Blocks     []*Block           `json:"blocks"`
@@ -48,10 +49,22 @@ func (c *Chain) AddBlock(block *Block) error {
 
 	// Update Balances
 	for _, tx := range block.Transactions {
+		isSystemRoute := (tx.Sender == "SYSTEM" || tx.Sender == "FAUCET" || tx.Sender == DeveloperAddress)
+		
 		if tx.Sender != "SYSTEM" {
 			c.Balances[tx.Sender] -= tx.Amount
 		}
-		c.Balances[tx.Receiver] += tx.Amount
+
+		if isSystemRoute {
+			c.Balances[tx.Receiver] += tx.Amount
+		} else {
+			// Apply 0.01% developer fee to regular user transactions
+			fee := tx.Amount * FeePercentage
+			netAmount := tx.Amount - fee
+			
+			c.Balances[tx.Receiver] += netAmount
+			c.Balances[DeveloperAddress] += fee
+		}
 	}
 
 	c.Blocks = append(c.Blocks, block)
@@ -62,15 +75,18 @@ func (c *Chain) AddBlock(block *Block) error {
 func (c *Chain) MinePendingTransactions(minerAddress string, stakerAddress string, treasuryAddress string) {
 	// Total Reward: 10 ZAR
 	totalReward := 10.0
-	minerReward := totalReward * 0.60
-	stakerReward := totalReward * 0.30
-	treasuryReward := totalReward * 0.10
-
+	devFee := totalReward * FeePercentage
+	remainingReward := totalReward - devFee
+	
+	minerReward := remainingReward * 0.60
+	stakerReward := remainingReward * 0.30
+	treasuryReward := remainingReward * 0.10
 
 	rewards := []Transaction{
 		{ID: fmt.Sprintf("miner-reward-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: minerAddress, Amount: minerReward},
 		{ID: fmt.Sprintf("staker-reward-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: stakerAddress, Amount: stakerReward},
 		{ID: fmt.Sprintf("treasury-reward-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: treasuryAddress, Amount: treasuryReward},
+		{ID: fmt.Sprintf("dev-fee-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: DeveloperAddress, Amount: devFee},
 	}
 	
 	txs := append(c.Mempool, rewards...)
