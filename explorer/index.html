@@ -459,15 +459,30 @@
             ? 'http://127.0.0.1:8545'
             : 'http://zar-chain.duckdns.org:8545');
 
+        // FORCE HTTP for DuckDNS (MetaMask/Browsers often upgrade to HTTPS)
+        if (RPC_URL.includes("duckdns.org") && RPC_URL.startsWith("https://")) {
+            RPC_URL = RPC_URL.replace("https://", "http://");
+            if (!RPC_URL.includes(":8545")) RPC_URL += ":8545";
+            localStorage.setItem('ZAR_RPC_URL', RPC_URL);
+        }
 
         function setManualRPC() {
-            const val = document.getElementById('manualRPC').value;
+            let val = document.getElementById('manualRPC').value.trim();
             if (val) {
+                // Auto-add protocol if missing
+                if (!val.startsWith('http://') && !val.startsWith('https://')) {
+                    val = 'http://' + val;
+                }
+                // Force HTTP for local/duckdns
+                if (val.includes("duckdns.org") || val.includes("127.0.0.1") || val.includes("localhost")) {
+                    val = val.replace("https://", "http://");
+                }
                 RPC_URL = val;
                 localStorage.setItem('ZAR_RPC_URL', val);
                 location.reload();
             }
         }
+
 
 
         async function fetchBlocks() {
@@ -491,7 +506,20 @@
             } catch (error) {
                 console.error("RPC Connection Error:", error);
                 document.getElementById('totalBlocks').innerText = "Error";
+
+                // Alert about Mixed Content if on HTTPS
+                if (window.location.protocol === 'https:' && RPC_URL.startsWith('http:')) {
+                    document.getElementById('blockBody').innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #FFD700;">
+                                ⚠️ Browser Security: Your browser is blocking the connection to your local node because this website is secure (HTTPS).<br>
+                                <b>Solution:</b> Click the yellow "Add Network" button to connect MetaMask directly!
+                            </td>
+                        </tr>
+                    `;
+                }
             }
+
         }
 
         function renderMockBlocks(latest) {
