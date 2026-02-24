@@ -453,7 +453,8 @@
         // --- PRODUCTION SETUP ---
         let RPC_URL = localStorage.getItem('ZAR_RPC_URL') || (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
             ? 'http://127.0.0.1:8545'
-            : 'https://zar-chain.duckdns.org/rpc');
+            : 'http://zar-chain.duckdns.org:8545');
+
 
         function setManualRPC() {
             const val = document.getElementById('manualRPC').value;
@@ -498,7 +499,8 @@
                     <td>#${i}</td>
                     <td>${new Date().toLocaleTimeString()}</td>
                     <td class="hash">0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 10)}</td>
-                    <td>Miner Reward (60 ZAR)</td>
+                    <td>Miner Reward (10 ZAR)</td>
+
                 `;
                 body.appendChild(tr);
             }
