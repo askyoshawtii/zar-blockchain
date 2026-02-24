@@ -556,28 +556,25 @@
         }
 
         async function addToMetaMask() {
-            let provider = window.ethereum;
+            // AGGRESSIVE DETECTION: Specifically look for MetaMask anywhere in the ethereum object
+            let provider = null;
 
-            // Handle cases where multiple wallets are installed (e.g., Trust + MetaMask)
-            if (window.ethereum && window.ethereum.providers) {
-                provider = window.ethereum.providers.find((p) => p.isMetaMask);
-            }
-
-            // If it's still not MetaMask, try to force-detect it
-            if (!provider || !provider.isMetaMask) {
-                if (window.ethereum && window.ethereum.isMetaMask && !window.ethereum.isTrust) {
+            if (window.ethereum) {
+                if (window.ethereum.providers) {
+                    provider = window.ethereum.providers.find(p => p.isMetaMask && !p.isTrust);
+                    if (!provider) provider = window.ethereum.providers.find(p => p.isMetaMask);
+                } else if (window.ethereum.isMetaMask && !window.ethereum.isTrust) {
                     provider = window.ethereum;
                 }
             }
 
-            if (!provider || !provider.isMetaMask) {
-                const isTrust = provider && (provider.isTrust || window.ethereum.isTrust);
-                const msg = isTrust
-                    ? "Trust Wallet is currently overriding MetaMask. \n\nTo fix this:\n1. Open Trust Wallet Extension\n2. Settings -> Set as Default Wallet -> OFF\n3. Refresh this page."
-                    : "MetaMask not found! Please install the MetaMask extension in your browser to use this feature.";
-                alert(msg);
+            // CRITICAL: If Trust Wallet is still hijacking window.ethereum
+            if (!provider || (provider.isTrust && !provider.isMetaMask)) {
+                alert("❌ WALLET CONFLICT DETECTED!\n\nTrust Wallet is currently 'Hijacking' your browser's connection and blocking MetaMask.\n\nHOW TO FIX:\n1. Open Trust Wallet extension settings.\n2. Turn OFF 'Set as default wallet'.\n3. Refresh this page and try again.");
                 return;
             }
+
+            console.log("Connecting using provider:", provider);
 
             const params = [{
                 chainId: '0x7a5',
@@ -600,6 +597,7 @@
                 alert("Wallet error: " + error.message);
             }
         }
+
 
         async function requestFaucet() {
             const addr = document.getElementById('faucetAddr').value;
