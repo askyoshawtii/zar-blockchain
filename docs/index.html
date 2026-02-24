@@ -386,6 +386,10 @@
                             style="padding: 0.4rem; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; font-size: 0.8rem; width: 200px;">
                         <button onclick="setManualRPC()" class="btn"
                             style="padding: 0.4rem 1rem; font-size: 0.8rem; box-shadow: none;">Connect</button>
+                        <button onclick="localStorage.removeItem('ZAR_RPC_URL'); location.reload();"
+                            class="btn btn-outline"
+                            style="padding: 0.4rem 1rem; font-size: 0.8rem; border-color: #FF4B4B; color: #FF4B4B;">Reset</button>
+
                         <span class="badge" style="margin:0; font-size: 0.7rem;">Real-time Feed</span>
                     </div>
                 </div>
