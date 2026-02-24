@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -34,6 +35,18 @@ func NewChain(difficulty int) *Chain {
 func (c *Chain) GetLatestBlock() *Block {
 	return c.Blocks[len(c.Blocks)-1]
 }
+
+// GetBalance returns the balance for an address, normalizing to lowercase
+func (c *Chain) GetBalance(addr string) float64 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	// Check both original and lowercase
+	if bal, ok := c.Balances[addr]; ok {
+		return bal
+	}
+	return c.Balances[strings.ToLower(addr)]
+}
+
 
 func (c *Chain) AddBlock(block *Block) error {
 	c.mu.Lock()
