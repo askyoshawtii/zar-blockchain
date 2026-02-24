@@ -378,8 +378,15 @@
             <div class="card-large">
                 <div class="card-header">
                     <h2>Latest Blocks</h2>
-                    <span class="badge" style="margin:0; font-size: 0.7rem;">Real-time Feed</span>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="text" id="manualRPC" placeholder="http://127.0.0.1:8545"
+                            style="padding: 0.4rem; border-radius: 6px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; font-size: 0.8rem; width: 200px;">
+                        <button onclick="setManualRPC()" class="btn"
+                            style="padding: 0.4rem 1rem; font-size: 0.8rem; box-shadow: none;">Connect</button>
+                        <span class="badge" style="margin:0; font-size: 0.7rem;">Real-time Feed</span>
+                    </div>
                 </div>
+
                 <table>
                     <thead>
                         <tr>
@@ -441,11 +448,19 @@
 
     <script>
         // --- PRODUCTION SETUP ---
-        // 1. Replace '127.0.0.1' with your DuckDNS domain (e.g., 'zar-chain.duckdns.org')
-        // 2. Ensure your node PC has port 8545 open on the router!
-        const RPC_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+        let RPC_URL = localStorage.getItem('ZAR_RPC_URL') || (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
             ? 'http://127.0.0.1:8545'
-            : 'https://zar-chain.duckdns.org'; // <--- Replace with your DuckDNS
+            : 'https://zar-chain.duckdns.org');
+
+        function setManualRPC() {
+            const val = document.getElementById('manualRPC').value;
+            if (val) {
+                RPC_URL = val;
+                localStorage.setItem('ZAR_RPC_URL', val);
+                location.reload();
+            }
+        }
+
 
         async function fetchBlocks() {
             try {
