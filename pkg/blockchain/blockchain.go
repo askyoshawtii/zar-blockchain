@@ -60,11 +60,12 @@ func (c *Chain) AddBlock(block *Block) error {
 
 
 func (c *Chain) MinePendingTransactions(minerAddress string, stakerAddress string, treasuryAddress string) {
-	// Total Reward: 60 ZAR
-	totalReward := 60.0
+	// Total Reward: 10 ZAR
+	totalReward := 10.0
 	minerReward := totalReward * 0.60
 	stakerReward := totalReward * 0.30
 	treasuryReward := totalReward * 0.10
+
 
 	rewards := []Transaction{
 		{ID: fmt.Sprintf("miner-reward-%d", len(c.Blocks)), Sender: "SYSTEM", Receiver: minerAddress, Amount: minerReward},
@@ -78,8 +79,25 @@ func (c *Chain) MinePendingTransactions(minerAddress string, stakerAddress strin
 	newBlock := NewBlock(int64(len(c.Blocks)), c.GetLatestBlock().Hash, txs, c.Difficulty)
 	newBlock.Mine()
 	c.AddBlock(newBlock)
+
+	// Adjust difficulty every 10 blocks (for testing) or 100 for production
+	if len(c.Blocks)%10 == 0 {
+		c.AdjustDifficulty()
+	}
+
 	c.SaveToFile()
 }
+
+func (c *Chain) AdjustDifficulty() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	// Simple logic: increase difficulty as height grows
+	// To make it professional, compare actual mine time vs target time
+	c.Difficulty++
+	fmt.Printf("[NETWORK] Difficulty increased to: %d\n", c.Difficulty)
+}
+
 
 func (c *Chain) SaveToFile() error {
 	c.mu.Lock()
