@@ -438,9 +438,12 @@
     </footer>
 
     <script>
-        // --- REAL NODE CONNECTIVITY ---
-        // Change this to your DuckDNS URL when ready!
-        const RPC_URL = 'http://127.0.0.1:8545';
+        // --- PRODUCTION SETUP ---
+        // 1. Replace '127.0.0.1' with your DuckDNS domain (e.g., 'zar-chain.duckdns.org')
+        // 2. Ensure your node PC has port 8545 open on the router!
+        const RPC_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+            ? 'http://127.0.0.1:8545'
+            : 'https://zar-chain.duckdns.org'; // <--- Replace with your DuckDNS
 
         async function fetchBlocks() {
             try {
@@ -491,6 +494,10 @@
         }
 
         async function addToMetaMask() {
+            if (!window.ethereum) {
+                alert("MetaMask not found! Please install the MetaMask extension in your browser to use this feature.");
+                return;
+            }
             const params = [{
                 chainId: '0x7a5',
                 chainName: 'ZAR Blockchain',
