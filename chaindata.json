@@ -1806,13 +1806,97 @@
       ],
       "nonce": 367786290,
       "difficulty": 7
+    },
+    {
+      "index": 52,
+      "timestamp": 1771998956,
+      "prev_hash": "0000000fc4118af9952ddef6f8a2e0d8dc1a2a7be90b35542d62f83a03774bab",
+      "hash": "0000000f238686750f436634580220118be027c06bd7957ee785c50a7cc01b1f",
+      "transactions": [
+        {
+          "id": "miner-reward-52",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 5.9994000000000005,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-52",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 2.9997000000000003,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-52",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 0.9999000000000001,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "dev-fee-52",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 0.001,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 257477154,
+      "difficulty": 7
+    },
+    {
+      "index": 53,
+      "timestamp": 1772001764,
+      "prev_hash": "0000000f238686750f436634580220118be027c06bd7957ee785c50a7cc01b1f",
+      "hash": "0000000073423e7641f4fd95722ec3b9c8650c25d93180628f595e2b07c6d103",
+      "transactions": [
+        {
+          "id": "miner-reward-53",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 5.9994000000000005,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-53",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 2.9997000000000003,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-53",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 0.9999000000000001,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "dev-fee-53",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 0.001,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 24565688,
+      "difficulty": 7
     }
   ],
   "difficulty": 7,
   "mempool": [],
   "balances": {
-    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 426.00319999999965,
-    "0xStakerAddress1234567890abcdef": 212.99759999999992,
-    "0xTreasuryFundAddress1234567890abcdef": 70.99919999999997
+    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 438.00399999999956,
+    "0xStakerAddress1234567890abcdef": 218.9969999999999,
+    "0xTreasuryFundAddress1234567890abcdef": 72.99899999999997
   }
 }
