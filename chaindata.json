@@ -1890,13 +1890,55 @@
       ],
       "nonce": 24565688,
       "difficulty": 7
+    },
+    {
+      "index": 54,
+      "timestamp": 1772001944,
+      "prev_hash": "0000000073423e7641f4fd95722ec3b9c8650c25d93180628f595e2b07c6d103",
+      "hash": "000000067814c5ad0f90a4756a10a021f43c42ca048a71bbbd58b0a431e7012a",
+      "transactions": [
+        {
+          "id": "miner-reward-54",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 5.9994000000000005,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "staker-reward-54",
+          "sender": "SYSTEM",
+          "receiver": "0xStakerAddress1234567890abcdef",
+          "amount": 2.9997000000000003,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "treasury-reward-54",
+          "sender": "SYSTEM",
+          "receiver": "0xTreasuryFundAddress1234567890abcdef",
+          "amount": 0.9999000000000001,
+          "timestamp": 0,
+          "signature": ""
+        },
+        {
+          "id": "dev-fee-54",
+          "sender": "SYSTEM",
+          "receiver": "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b",
+          "amount": 0.001,
+          "timestamp": 0,
+          "signature": ""
+        }
+      ],
+      "nonce": 26611293,
+      "difficulty": 7
     }
   ],
   "difficulty": 7,
   "mempool": [],
   "balances": {
-    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 438.00399999999956,
-    "0xStakerAddress1234567890abcdef": 218.9969999999999,
-    "0xTreasuryFundAddress1234567890abcdef": 72.99899999999997
+    "0xA048F7cfFb548B05eA90ab94962ED0e9A7fC865b": 444.0043999999995,
+    "0xStakerAddress1234567890abcdef": 221.9966999999999,
+    "0xTreasuryFundAddress1234567890abcdef": 73.99889999999996
   }
 }
